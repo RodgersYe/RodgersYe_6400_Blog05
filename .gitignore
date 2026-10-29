@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Renviron
+/data_raw/usa_*.xml
+/data_raw/usa_*.dat.gz
+/data_raw/extract_id.txt
+/data_processed/single_person_renters_clean.rds
