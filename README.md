@@ -20,7 +20,7 @@ The reproducible R workflow consists of **four scripts**, producing **one proces
 
 Script 01 requests rectangular, fixed-width person records with the household members and variables needed to reproduce the study, including household weights (`HHWT`), person weights (`PERWT`), and 80 household replicate weights (`REPWT1`–`REPWT80`). The extraction number (`00002`) is **not fixed**: a new IPUMS request can return another `usa_XXXXX` filename. Scripts 02–03 locate a single matching `.xml`/`.dat.gz` pair automatically; keep exactly one such pair in `data_raw/`.
 
-**Important — access is not the same as redistribution permission.** These data come from **IPUMS USA and the U.S. Census Bureau, not the U.S. Bureau of Economic Analysis (BEA)**. Therefore, the relevant terms for the IPUMS extract are the [IPUMS USA Terms of Use](https://usa.ipums.org/usa/terms.shtml), not a BEA data-use agreement. IPUMS generally requires permission to redistribute its sample data, except for a limited journal-publication provision described in its terms. **Before including the raw IPUMS extract in a public GitHub repository, the maintainer must verify that the intended redistribution is authorized.** Any repository recipient must also follow the applicable IPUMS terms and citation requirements; receiving a copy does not grant unrestricted redistribution rights. If permission has not been obtained, the microdata should not be publicly shared, and reproducers should obtain their own extract through IPUMS instead.
+**Important — access is not the same as redistribution permission.** These data come from **IPUMS USA and the U.S. Census Bureau. The relevant terms for the IPUMS extract are the [IPUMS USA Terms of Use](https://usa.ipums.org/usa/terms.shtml). IPUMS generally requires permission to redistribute its sample data, except for a limited journal-publication provision described in its terms. **Before including the raw IPUMS extract in a public GitHub repository, the maintainer must verify that the intended redistribution is authorized.** Any repository recipient must also follow the applicable IPUMS terms and citation requirements; receiving a copy does not grant unrestricted redistribution rights. If permission has not been obtained, the microdata should not be publicly shared, and reproducers should obtain their own extract through IPUMS instead.
 
 The derived `data_processed/single_person_renters_clean.rds` contains household-level microdata and should likewise **not be publicly redistributed without confirming permission**. The repository's code does not confer a separate license to the underlying data. Never commit an IPUMS API key or the private `.Renviron` file.
 
@@ -33,7 +33,7 @@ Script 04 uses this ZIP to draw state boundaries and downloads it **only if it i
 
 ## Repository Structure
 
-Paths are relative to the RStudio project root, `RodgersYe_6400_Blog05/`. This reflects the **new, flat `data_raw/` structure**—there are no `ipums_2024/` or `geography/` subfolders.
+Paths are relative to the RStudio project root, `RodgersYe_6400_Blog05/`.
 
 ```text
 RodgersYe_6400_Blog05/
@@ -64,8 +64,6 @@ RodgersYe_6400_Blog05/
 └── .git/                                # Local Git metadata; not research input
 ```
 
-The tree shows the **local project layout**, not a verified inventory of what GitHub currently tracks. In particular, `data_raw/` files are listed because they are present in the supplied project screenshot; their public distribution must be checked against the applicable terms. `extract_id.txt` belongs to the account that submitted the request and should not be treated as a reusable task ID for another account. Local files such as `.Renviron`, `.Rhistory`, and `.Rproj.user/` are not necessary to reproduce the analysis.
-
 ## Software Requirements
 
 Use **R and RStudio** (recommended), with the following R packages:
@@ -77,19 +75,15 @@ install.packages(c(
 ))
 ```
 
-The `sf` package also requires compatible spatial libraries on your computer. This repository does not contain a software lockfile, so the results may not be byte-for-byte identical under future package versions or revised IPUMS extracts. **Quarto is not required to execute these four scripts**; publishing a separate blog page is outside this standalone analytical workflow.
-
 ## How to Reproduce the Research
 
 ### Step 1 — Open the project
 
-Clone or download the Blog 05 repository and open `RodgersYe_6400_Blog05.Rproj` in RStudio. Run R from this **project root**. All four scripts use project-relative paths and are stored in `code/`; do **not** use the old `blog/posts/post5/` paths.
+Clone or download the Blog 05 repository and open `RodgersYe_6400_Blog05.Rproj` in RStudio. Run R from this **project root**. All four scripts use project-relative paths and are stored in `code/`.
 
-If an authorized, complete, matching IPUMS extract is already present in `data_raw/`, you can use it directly. Verify that there is exactly **one matching XML/data pair**. Leave the `.dat.gz` compressed; `ipumsr` reads it using the XML metadata.
+### Step 2 — Set up IPUMS access
 
-### Step 2 — Set up IPUMS access if a new extract is needed
-
-If the raw extract is unavailable or cannot be lawfully reused, register with [IPUMS USA](https://usa.ipums.org/usa/) and obtain your own API key from the [IPUMS Developer Portal](https://developer.ipums.org/). Create a **local, uncommitted** `.Renviron` file in the project root containing:
+Register with [IPUMS USA](https://usa.ipums.org/usa/) and obtain your own API key from the [IPUMS Developer Portal](https://developer.ipums.org/). Create a **local, uncommitted** `.Renviron` file in the project root containing:
 
 ```text
 IPUMS_API_KEY=YOUR_PERSONAL_API_KEY
@@ -98,8 +92,6 @@ IPUMS_API_KEY=YOUR_PERSONAL_API_KEY
 Restart R (or load the file using `readRenviron(here::here(".Renviron"))`). Do not publish the key.
 
 The default `auto` mode in script 01 checks for a complete local pair first. If none exists, it resumes the locally saved extract task or submits a new task, waits for IPUMS to prepare it, and downloads the `.xml` and `.dat.gz` files **directly into `data_raw/`**. The task number is saved in `data_raw/extract_id.txt`.
-
-If you are using your **own** IPUMS account with a repository that contains somebody else's `extract_id.txt` but no usable raw pair, remove or replace that stale ID *only after confirming that no valid task of your own needs to be resumed*. Otherwise the script may attempt to access another account's task. IPUMS server-side preparation may take a substantial amount of time; do not repeatedly submit duplicate requests.
 
 Optional API modes can be selected in the console before running script 01:
 
@@ -189,4 +181,4 @@ This analysis is descriptive and limited to 2024 state-level observations. Diffe
 
 **Underlying survey and state boundaries:** U.S. Census Bureau, 2024 ACS one-year data and 2024 cartographic boundary files.
 
-**Required usage review:** [IPUMS USA Terms of Use](https://usa.ipums.org/usa/terms.shtml). Public availability of a data file, if any, does not override these terms. The **BEA** is not the source of the files listed in this project; a BEA agreement would apply only if separately sourced BEA data were added.
+**Required usage review:** [IPUMS USA Terms of Use](https://usa.ipums.org/usa/terms.shtml). Public availability of a data file, if any, does not override these terms.
